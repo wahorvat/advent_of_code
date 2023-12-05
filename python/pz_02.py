@@ -23,7 +23,7 @@ for line in lines:
     maxes = line_maxes(line)
     game_val = game_num(line)
     if (maxes['red'] > 12 or maxes['green'] > 13 or maxes['blue'] > 14):
-        pass
+        continue
     else:
         result1 += game_val
 
@@ -37,4 +37,4 @@ for line in lines:
     prod = set_power(maxes)
     result2 += prod
 
-print(result2)
+print(result1, result2)
