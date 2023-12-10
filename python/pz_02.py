@@ -3,8 +3,8 @@ import parse
 import math
 from collections.abc import Iterator
 
-input_file = open("./input/input_02.txt") 
-data = input_file.read()
+with open("./input/input_02.txt") as file:
+    data = file.read()
 lines = data.splitlines()
 
 type Line_Maxes = dict[str, int]

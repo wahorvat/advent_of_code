@@ -1,8 +1,8 @@
 import regex
 import string
 
-input_file = open("./input/input_01.txt") 
-data = input_file.read()
+with open("./input/input_01.txt") as file:
+    data = file.read()
 
 def filter_digits(s):
     return list(x for x in s if x in string.digits)
