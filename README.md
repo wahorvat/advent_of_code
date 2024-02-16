@@ -1,3 +1,3 @@
-# Solutions to Advent of Code
+# Advent of Code
 
-Puzzles provided [here](https://adventofcode.com/)
+This repository contains my solutions to [Advent of Code](https://adventofcode.com/).
