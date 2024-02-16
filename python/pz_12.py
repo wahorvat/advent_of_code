@@ -12,8 +12,9 @@ test_string = """???.### 1,1,3
 ?###???????? 3,2,1"""
 
 lines = test_string.splitlines()
+print(int(lines[0].split()[1][0]))
 
-print(lines[2])
+"""permutations of spaced chuncks that fit the number considering existing characters"""
 
 
 
