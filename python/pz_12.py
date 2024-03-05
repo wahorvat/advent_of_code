@@ -1,60 +1,62 @@
-from functools import cache
-
-#with open('./input/input_12.txt') as file:
-#    data_string = file.read()
+f = open('./input/input_12.txt')
 
 
-test_string = """???.### 1,1,3
-.??..??...?##. 1,1,3
-?#?#?#?#?#?#?#? 1,3,1,6
-????.#...#... 4,1,1
-????.######..#####. 1,6,5
-?###???????? 3,2,1"""
+test_string = "???.### 1,1,3"
 
-# def f(line):
-#     P, N = line.split()
-#     P, N = (P+'?') * 5, eval(N) * 5
+def matches(text: str, numbers: str) -> dict:
+    states = "."
+    for num in numbers:
+        for i in range(int(num)):
+            states += "#"
+        states += "."
 
-#     @cache
-#     def dp(p, n, r=0):
-#         if p == len(P): 
-#             return n == len(N)
+    states_dict = {0: 1}
+    new_dict = {}
+    for char in text:
+        for state in states_dict:
+            if char == "?":
+                if state + 1 < len(states):
+                    new_dict[state + 1] = new_dict.get(state + 1, 0) + states_dict[state]
+                if states[state] == ".":
+                    new_dict[state] = new_dict.get(state, 0) + states_dict[state]
 
-#         if P[p] in '.?': 
-#             r += dp(p+1, n)
+            elif char == ".":
+                if state + 1 < len(states) and states[state + 1] == ".":
+                    new_dict[state + 1] = new_dict.get(state + 1, 0) + states_dict[state]
+                if states[state] == ".":
+                    new_dict[state] = new_dict.get(state, 0) + states_dict[state]
 
-#         try:
-#             q = p+N[n]
-#             if '.' not in P[p:q] and '#' not in P[q]:
-#                 r += dp(q+1, n+1)
-#         except IndexError: 
-#             pass
+            elif char == "#":
+                if state + 1 < len(states) and states[state + 1] == "#":
+                    new_dict[state + 1] = new_dict.get(state + 1, 0) + states_dict[state]
 
-#         return r
+        states_dict = new_dict
+        new_dict = {}
 
-#     return dp(0, 0)
-
-# print(sum(map(f, open('./input/input_12.txt'))))
-
-
-@cache
-def recurse(lava, springs, result=0):
-    if not springs:
-        return '#' not in lava
-    current, springs = springs[0], springs[1:]
-    for i in range(len(lava) - sum(springs) - len(springs) - current + 1):
-        if "#" in lava[:i]:
-            break
-        if (nxt := i + current) <= len(lava) and '.' not in lava[i : nxt] and lava[nxt : nxt + 1] != "#":
-            result += recurse(lava[nxt + 1:], springs)
-    return result
+    return states_dict.get(len(states) - 1, 0) + states_dict.get(len(states) - 2, 0)
 
 
-with open("./input/input_12.txt", "r") as file:
-    data = [x.split() for x in file.read().splitlines()]
-    p1, p2 = 0, 0
-    for e, (lava, springs) in enumerate(data):
-        p1 += recurse(lava, (springs := tuple(map(int, springs.split(",")))))
-        p2 += recurse("?".join([lava] * 5), springs * 5)
-    print(p1, p2)
+test_sum = 0
 
+test_line = test_string.strip().split(" ")
+test_text = ((test_line[0]+"?"))[:-1]
+test_numbers = test_line[1].split(",")
+test_sum += matches(test_text, test_numbers)
+
+assert test_sum == 1
+
+sum_1 = 0
+sum_2 = 0
+
+for line in f.readlines():
+    line = line.strip().split(" ")
+    text_1 = ((line[0]+"?"))[:-1]
+    numbers_1 = line[1].split(",")
+
+    text_2 = (5*(line[0]+"?"))[:-1]
+    numbers_2 = 5*line[1].split(",")
+
+    sum_1 += matches(text_1, numbers_1)
+    sum_2 += matches(text_2, numbers_2)
+
+print(sum_1, sum_2)

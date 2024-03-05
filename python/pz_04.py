@@ -1,6 +1,5 @@
 import re
 
-
 with open("./input/input_04.txt") as file:
     data = file.read()
 
