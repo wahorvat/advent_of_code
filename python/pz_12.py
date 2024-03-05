@@ -1,7 +1,7 @@
-import itertools
+from functools import cache
 
-with open('./input/input_12.txt') as file:
-    data_string = file.read()
+#with open('./input/input_12.txt') as file:
+#    data_string = file.read()
 
 
 test_string = """???.### 1,1,3
@@ -11,28 +11,50 @@ test_string = """???.### 1,1,3
 ????.######..#####. 1,6,5
 ?###???????? 3,2,1"""
 
-lines = test_string.splitlines()
-print(lines[0])
+# def f(line):
+#     P, N = line.split()
+#     P, N = (P+'?') * 5, eval(N) * 5
 
-def count_arrangements(input_string):
-    parts = input_string.split()
-    sequence = list(parts[0])
-    lengths = list(map(int, parts[1].split(',')))
-    print(f'\n lengths: {lengths}', f'sequence: {sequence} \n')
+#     @cache
+#     def dp(p, n, r=0):
+#         if p == len(P): 
+#             return n == len(N)
 
-    total_arrangements = 1  
-    
-    for length in lengths:
-        count = sequence.count('?') + sequence.count('#')
-        if count < length:
-            return 0
-        arrangements = 1
-        for i in range(length):
-            arrangements *= count - i
-        total_arrangements *= arrangements
-        sequence = sequence[length+1:]  # remove the used characters and a period
+#         if P[p] in '.?': 
+#             r += dp(p+1, n)
 
-    return total_arrangements
+#         try:
+#             q = p+N[n]
+#             if '.' not in P[p:q] and '#' not in P[q]:
+#                 r += dp(q+1, n+1)
+#         except IndexError: 
+#             pass
 
-# Test the function
-print(count_arrangements('???.### 1,1,3'))  # Output: 0
+#         return r
+
+#     return dp(0, 0)
+
+# print(sum(map(f, open('./input/input_12.txt'))))
+
+
+@cache
+def recurse(lava, springs, result=0):
+    if not springs:
+        return '#' not in lava
+    current, springs = springs[0], springs[1:]
+    for i in range(len(lava) - sum(springs) - len(springs) - current + 1):
+        if "#" in lava[:i]:
+            break
+        if (nxt := i + current) <= len(lava) and '.' not in lava[i : nxt] and lava[nxt : nxt + 1] != "#":
+            result += recurse(lava[nxt + 1:], springs)
+    return result
+
+
+with open("./input/input_12.txt", "r") as file:
+    data = [x.split() for x in file.read().splitlines()]
+    p1, p2 = 0, 0
+    for e, (lava, springs) in enumerate(data):
+        p1 += recurse(lava, (springs := tuple(map(int, springs.split(",")))))
+        p2 += recurse("?".join([lava] * 5), springs * 5)
+    print(p1, p2)
+
