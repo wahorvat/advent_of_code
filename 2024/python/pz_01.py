@@ -1,7 +1,7 @@
 import numpy as np
 import string
 
-with open("../../../aoc_inputs/day1/day 1-1.txt") as file:
+with open("../../../aoc_inputs/day 1.txt") as file:
     data = file.read()
 
 def process_lines(lines):
